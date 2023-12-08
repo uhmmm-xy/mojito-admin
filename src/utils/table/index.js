@@ -1,4 +1,4 @@
-import { reactive, watch } from 'vue'
+import { reactive, watch } from "vue";
 
 export function tableDefaultData() {
   const table = reactive({
@@ -9,40 +9,43 @@ export function tableDefaultData() {
       total: 0,
       from: 1,
       lastPage: 1,
-      to:1
+      to: 1,
     },
     nowRow: {
       index: 0,
-      row: {}
+      row: {},
     },
     queryParams: {},
-    loading: false
-  })
+    loading: false,
+  });
 
   watch(table.queryParams, () => {
-    table.pagination.currentPage = 1
-  })
+    table.pagination.currentPage = 1;
+  });
 
   table.getQueryParams = () => {
-    return {...table.queryParams, page: table.pagination.currentPage}
-  }
+    return { ...table.queryParams, page: table.pagination.currentPage };
+  };
 
-  return table
+  return table;
 }
 
-
 export function tableDataFormat(response, table) {
-  table.data = response.data.data
-
-  let meta = response.data.meta
+  table.data = response.data.data;
+  let meta;
+  if (response.data.meta) {
+    meta = response.data.meta;
+  } else {
+    meta = response.data;
+  }
   table.pagination = {
     currentPage: meta.current_page,
     pageSize: meta.per_page,
     total: meta.total,
     from: meta.from,
     lastPage: meta.last_page,
-    to: meta.to
-  }
+    to: meta.to,
+  };
 
-  table.loading = false
+  table.loading = false;
 }

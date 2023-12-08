@@ -12,8 +12,7 @@ import { useAppStore } from "@/store/app"
 import { useRoute } from 'vue-router'
 import config from '@/config'
 import { routeFormatTag } from '@/utils/helper'
-import zhCn from 'element-plus/lib/locale/lang/zh-cn'
-import en from 'element-plus/lib/locale/lang/en'
+import {zhCn} from 'element-plus/lib/locale/lang/zh-cn'
 import { getLocale } from './utils/localforage'
 import { useI18n } from 'vue-i18n'
 
@@ -42,7 +41,7 @@ watch(route, () => {
 })
 
 const locale = computed(() => {
-  return appStore.locale === 'zh-cn' ? zhCn : en
+  return zhCn;
 })
 
 </script>

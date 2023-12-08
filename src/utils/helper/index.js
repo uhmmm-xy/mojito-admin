@@ -1,6 +1,6 @@
-import routers from '@/router/routes';
-import i18n from '@/lang'
-import { useAppStore } from "@/store/app"
+import routers from "@/router/routes";
+import i18n from "@/lang";
+import { useAppStore } from "@/store/app";
 
 export const routeByName = (name) => {
   let router;
@@ -8,76 +8,88 @@ export const routeByName = (name) => {
   let each = (routers, name) => {
     for (let item of routers) {
       if (item.name === name) {
-        router = item
+        router = item;
       }
 
       if (router) {
-        break
+        break;
       }
 
-      if (item.hasOwnProperty('children') && item.children.length > 0) {
-        each(item.children, name)
+      if (item.hasOwnProperty("children") && item.children.length > 0) {
+        each(item.children, name);
       }
     }
     return router;
-  }
+  };
 
-  return each(routers, name)
-}
+  return each(routers, name);
+};
 
-export const routeFormatTag = route => {
+export const routeFormatTag = (route) => {
   return {
     name: route.name,
     fullPath: route.fullPath,
-    title: route.meta.title ? route.meta.title : '',
+    title: route.meta.title ? route.meta.title : "",
     cache: route.meta && route.meta.cache,
     closable: !route.meta.notClosable,
-  }
-}
+  };
+};
 
 export const getCascaderDefaultIds = (node) => {
-  let ids = []
-  let tempNode = node
+  let ids = [];
+  let tempNode = node;
   while (tempNode.data.parent_id) {
-    ids.push(tempNode.data.parent_id)
-    tempNode = tempNode.parent
+    ids.push(tempNode.data.parent_id);
+    tempNode = tempNode.parent;
   }
 
-  return ids.reverse()
-}
-
+  return ids.reverse();
+};
 
 export const getNodeParentPath = (id, nodes, path = {}) => {
   for (let i = 0; i < nodes.length; i++) {
     if (path.status) {
-      break
+      break;
     }
 
-    let node = nodes[i]
+    let node = nodes[i];
     if (node.parent_id === 0) {
-      path.ids = []
+      path.ids = [];
     }
 
     if (i === 0 && node.parent_id > 0) {
-      path[node.parent_id] = [...path.ids]
+      path[node.parent_id] = [...path.ids];
     }
 
     if (id === node.id) {
-      path.status = true
-      path.ids = path.hasOwnProperty(node.parent_id) ? [...path[node.parent_id]] : []
-      break
+      path.status = true;
+      path.ids = path.hasOwnProperty(node.parent_id)
+        ? [...path[node.parent_id]]
+        : [];
+      break;
     } else {
-      path.ids.push(node.id)
+      path.ids.push(node.id);
     }
 
     if (node.children) {
-      getNodeParentPath(id, node.children, path)
+      getNodeParentPath(id, node.children, path);
     }
   }
-}
+};
 
 export const getTagTitleName = (titleKey) => {
-  let metaKey = `meta.title.${titleKey}`
+  let metaKey = `meta.title.${titleKey}`;
 
-  return i18n.global.te(metaKey, useAppStore().locale) ? i18n.global.t(metaKey) : titleKey
-}
+  return i18n.global.te(metaKey, useAppStore().locale)
+    ? i18n.global.t(metaKey)
+    : titleKey;
+};
+
+export const isMobile = () => {
+  return (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    ) ||
+    (navigator.maxTouchPoints && navigator.maxTouchPoints > 2)
+  );
+};

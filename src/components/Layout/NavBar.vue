@@ -1,5 +1,5 @@
 <template>
-  <el-aside :width="isCollapse ? '65px' : '250px'">
+  <el-aside :width="isCollapse ? '0px' : '250px'">
     <div style="display:flex;flex-direction:column;height:100%;background:#263238;border-right:1px solid #e6e6e6;">
       <div class="logo">
         <div v-if="!isCollapse" class="normal">
@@ -32,9 +32,10 @@ import NavItem from './NavItem.vue'
 import config from '@/config'
 import { myMenu } from '@/api/menu'
 import { ref } from 'vue'
+import { isMobile } from '@/utils/helper'
 
 const props = defineProps({
-  isCollapse: Boolean
+  isCollapse: Boolean,
 })
 
 let menuItems = ref([])
@@ -45,6 +46,8 @@ myMenu().then(response => {
 
 const fullName = config.fullName
 const abbrName = config.abbrName
+
+
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

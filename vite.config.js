@@ -16,9 +16,20 @@ export default defineConfig(({ command }) => {
         { find: '@', replacement: path.resolve(__dirname, 'src') }
       ]
     },
+    server:{
+      host:'localhost',
+      proxy:{
+        "/api":{
+          target:"http://127.0.0.1:8000/api",
+          ws:false,
+          changeOrigin:true,
+          rewrite:(path)=>path.replace(/^\/api/,''),
+        }
+      }
+    },
     plugins: [
       vue(),
-      mock(command, prodMock),
+      // mock(command, prodMock),
       AutoImport({
         resolvers: [ElementPlusResolver()],
       }),

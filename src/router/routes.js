@@ -7,6 +7,9 @@ import adminUser from '@/views/admin-user/routes'
 import menu from '@/views/menu/routes'
 import role from '@/views/role/routes'
 import permission from '@/views/permission/routes'
+import game from '@/views/game/routes'
+import member from '@/views/member/routes'
+import recharge from '@/views/recharge/routes'
 
 export default [
   {
@@ -33,6 +36,9 @@ export default [
       ...menu,
       ...permission,
       ...role,
+      ...game,
+      ...recharge,
+      ...member,
     ]
   },
   ...auth,
