@@ -33,7 +33,10 @@
             <el-button type="success" @click="requestData">搜索</el-button>
             <el-button type="primary" v-if="hasCreate" @click="onCreated"
               >新增</el-button
-            >
+            >&nbsp;&nbsp;&nbsp;&nbsp;
+            <el-tag :span="1" type="success" round>+</el-tag>&nbsp;
+            <el-tag :span="1" type="danger" round>-</el-tag>&nbsp;
+            <el-tag :span="1" type="info" round>off</el-tag>
           </el-form-item>
         </el-col>
       </el-row>
@@ -46,10 +49,17 @@
     border
     style="width: 100%"
     v-if="isMobile() !== true"
+    :row-class-name="getColor"
   >
     <el-table-column prop="pid" label="玩家ID"></el-table-column>
     <el-table-column prop="user_name" label="玩家昵称"> </el-table-column>
-    <el-table-column prop="status" label="状态"> </el-table-column>
+    <el-table-column prop="status" label="状态">
+      <template #default="scope">
+        <el-tag :span="1" :type='scope.row.status == 0 ? "info" : scope.row.value > 0 ? "success":"danger"' round>
+        {{ scope.row.status == 0? "关闭":"开启" }}
+        </el-tag>
+      </template>
+    </el-table-column>
     <el-table-column prop="value" label="控制值"> </el-table-column>
     <el-table-column prop="created_at" label="创建时间"> </el-table-column>
     <el-table-column prop="updated_at" label="修改时间"> </el-table-column>
@@ -58,7 +68,6 @@
       <template #default="scope">
         <el-button
           v-if="hasUpdate"
-          :link="true"
           type="primary"
           @click="handleEdit(scope.row)"
         >
@@ -70,7 +79,7 @@
           @confirm="handleDelete(scope.$index, scope.row)"
         >
           <template #reference>
-            <el-button type="danger" :link="true">删除</el-button>
+            <el-button type="danger">删除</el-button>
           </template>
         </el-popconfirm>
       </template>
@@ -85,32 +94,31 @@
         <label>操作</label>
       </el-col>
     </el-row>
-    <el-divider />
+    <el-divider style="margin: 10px 0px" />
     <el-row
+      class="mobile-row"
       v-for="(item, index) in table.data"
       :key="index"
-      :class="getColor(item)"
+      :class="getColor(item, false)"
     >
-      <el-col :span="8">|{{ item.user_name }}</el-col>
-      <el-col :span="5">|{{ item.pid }}</el-col>
-      <el-col :span="5">|{{ item.value }}</el-col>
+      <el-col :span="8"
+        >{{ item.user_name }}<br />{{ getGameName(item.game_type) }}</el-col
+      >
+      <el-col :span="5">{{ item.pid }}</el-col>
+      <el-col :span="5">{{ item.value }}</el-col>
 
-      <el-col :span="6">|
-        <el-button
-          v-if="hasUpdate"
-          :link="true"
-          type="primary"
-          @click="handleEdit(item)"
-        >
+      <el-col :span="6">
+        <el-button v-if="hasUpdate" type="primary" @click="handleEdit(item)">
           修改
         </el-button>
+        <br />
         <el-popconfirm
           v-if="hasDelete"
           title="删除"
           @confirm="handleDelete(index, item)"
         >
           <template #reference>
-            <el-button type="danger" :link="true">删除</el-button>
+            <el-button type="danger">删除</el-button>
           </template>
         </el-popconfirm>
       </el-col>
@@ -159,8 +167,15 @@ console.log(isMobile());
 
 requestData();
 
-const onSubmit = () => {
-  return;
+const GameName = {
+  1: "十三水",
+  22: "金华麻将",
+  60: "四副牌",
+  196: "杭州麻将",
+};
+
+const getGameName = (key) => {
+  return GameName[key];
 };
 
 const formAction = ref("add");
@@ -189,11 +204,20 @@ const hasUpdate = computed(() =>
   permissionStore.hasPermission("game.control.update")
 );
 
-const getColor = (item, index = 0) => {
-  if ((item.status = 0)) {
+/**
+ *
+ * @param {*} item
+ * @param {Boolean} stable
+ */
+const getColor = (item, stable = true) => {
+  let row = item;
+  if (stable) {
+    row = item.row;
+  }
+  if (row.status == 0) {
     return "backgroundWhite";
   } else {
-    return item.value > 0 ? "backgroundGreen" : "backgroundRed";
+    return row.value > 0 ? stable? "success-row" : "backgroundGreen" : stable? "danger-row" :"backgroundRed";
   }
 };
 
@@ -201,17 +225,35 @@ console.log(hasUpdate);
 </script>
 <style scoped>
 .backgroundRed {
-  background-color: rgb(248, 62, 62);
-  color: white;
+  background-color: rgb(248, 62, 62) !important;
+  color: white !important;
 }
 
 .backgroundGreen {
-  background-color: #3ee74d;
-  color: white;
+  background-color: #3ee74d !important;
+  color: black !important;
 }
 
 .backgroundWhite {
-  background-color: white;
-  color: black;
+  background-color: white !important;
+  color: black !important;
+}
+
+.mobile-row .el-col {
+  border-left: 1px #000 solid;
+  border-bottom: 1px #000 solid;
+  padding-left: 3px;
+  font-size: 1.05rem;
+}
+.mobile-row .el-col:last-child {
+  border-right: 1px #000 solid;
+}
+
+
+.el-table .danger-row {
+  --el-table-tr-bg-color: var(--el-color-Danger-light-9);
+}
+.el-table .success-row {
+  --el-table-tr-bg-color: var(--el-color-success-light-9);
 }
 </style>

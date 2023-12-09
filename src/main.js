@@ -7,6 +7,8 @@ import * as Icons from '@element-plus/icons-vue'
 import '@/assets/css/index.css'
 import 'element-plus/theme-chalk/el-message.css'
 import 'element-plus/theme-chalk/el-notification.css'
+import locale from 'element-plus/lib/locale/lang/zh-cn'
+import ElementPlus from 'element-plus'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -18,6 +20,8 @@ for (const iconName in Icons) {
     app.component(iconName, Icons[iconName])
   }
 }
+
+app.use(ElementPlus,{locale})
 
 app.mount('#app')
 

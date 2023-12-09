@@ -8,14 +8,6 @@
       <el-form-item :label="$t('password')" prop="password">
         <el-input type="Password" v-model="form.password" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item :label="$t('captcha')" prop="captcha">
-        <div class="captcha-code">
-          <el-input v-model="form.captcha"></el-input>
-        </div>
-        <div class="captcha-img" @click="refreshCaptcha">
-          <img :src="captcha.imageContent" style="height:30px"/>
-        </div>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" plain @click="submitForm()">{{ $t('submit') }}</el-button>
         <el-button plain @click="resetForm()">{{ $t("reset") }}</el-button>
@@ -35,34 +27,12 @@ const { t } = useI18n()
 const authStore = useAuthStore()
 const router = useRouter()
 
-const captcha = reactive({
-  key: null,
-  imageContent: null,
-  expiredAt: null,
-})
-
-const refreshCaptcha = () => {
-  getCaptcha().then(response => {
-    const data = response.data.data
-    captcha.key = data.key
-    captcha.imageContent = data.image_content
-    captcha.expiredAt = data.expired_at
-  })
-}
-
-onMounted(() => {
-  refreshCaptcha()
-})
-
 const rules = {
   username: [
     { required: true, trigger: 'blur', message: t('rules.login.username.required') }
   ],
   password: [
     { required: true, trigger: 'blur', message: t('rules.login.password.required') }
-  ],
-  captcha: [
-    { required: true, trigger: 'blur', message: t('rules.login.captcha.required') }
   ]
 }
 
@@ -77,9 +47,7 @@ const loginForm = ref(null)
 const submitForm = () => {
   loginForm.value.validate((valid) => {
     if (valid) {
-      const data = {captcha_key: captcha.key, ...form.value}
-
-      authStore.loginHandle(data).then(() => {
+      authStore.loginHandle(form.value).then(() => {
         router.push({
           name: config.homeRouteName
         })
