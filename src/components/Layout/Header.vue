@@ -1,33 +1,19 @@
 <template>
   <el-header>
     <el-row>
-      <el-col :span="1" class="open-menu">
+      <el-col :span="2" class="open-menu">
         <el-icon @click="menuOpenOrClose">
           <expand v-if="isCollapse" />
           <fold v-if="!isCollapse" />
         </el-icon>
       </el-col>
-      <el-col :span="15">
+      <el-col :span="14">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item v-for="bc in breadcrumb" :to="{ path: bc.path }" :key="bc.path"> {{ getTagTitleName(bc.meta.title) }}</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
       <el-col :span="8" style="text-align:right;">
-        <el-dropdown style="margin-right:30px;line-height:60px;" v-if="switchLanguage">
-          <span class="el-dropdown-link">
-            {{ $t("language") }}
-            <el-icon class="el-icon--right">
-              <arrow-down />
-            </el-icon>
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="changeLang('zh-cn')">简体中文</el-dropdown-item>
-              <el-dropdown-item @click="changeLang('en')">English</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-        <el-dropdown style="line-height:60px;">
+        <el-dropdown style="line-height:40px;">
           <span class="el-dropdown-link">
             <el-icon>
               <avatar />
@@ -38,9 +24,6 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <a href='https://github.com/moell-peng/mojito-admin' target="_blank">
-                <el-dropdown-item>Github</el-dropdown-item>
-              </a>
               <el-dropdown-item @click="openChangePassword">{{ $t('changePassword') }}</el-dropdown-item>
               <el-dropdown-item @click="logout">{{ $t('logout') }}</el-dropdown-item>
             </el-dropdown-menu>
@@ -56,8 +39,6 @@ import { computed } from 'vue'
 import config from '@/config'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from "@/store/auth"
-import { useI18n } from 'vue-i18n'
-import { setLocale } from '@/utils/localforage'
 import { getTagTitleName } from '@/utils/helper'
 import { Fold, Expand, Avatar, ArrowDown } from "@element-plus/icons-vue"
 import { useAppStore } from "@/store/app"
@@ -70,7 +51,6 @@ const props = defineProps({
 const emit = defineEmits(['menu'])
 const router = useRouter()
 const authStore = useAuthStore()
-const appStore = useAppStore()
 const breadcrumbStore = useBreadcrumbStore()
 
 const openChangePassword = () => {
@@ -83,16 +63,6 @@ const logout = () => {
   }))
 }
 
-const i18n = useI18n()
-
-const changeLang = (lang) => {
-  appStore.setLocale(lang)
-  i18n.locale.value = lang
-  setLocale(lang)
-}
-
-const showAuthorGitHubUrl = config.showAuthorGitHubUrl
-const switchLanguage = config.switchLanguage
 const breadcrumb = computed(() => breadcrumbStore.breadcrumb)
 const menuOpenOrClose = () => emit('menu', !props.isCollapse)
 </script>
@@ -100,8 +70,8 @@ const menuOpenOrClose = () => emit('menu', !props.isCollapse)
 <style rel="stylesheet/scss" lang="scss" scoped>
   .el-header {
     border-bottom: 1px solid #e6e6e6;
-    height: 60px;
-    line-height:60px;
+    height: 40px;
+    line-height:40px;
   }
   .el-button {
     border:none;
@@ -111,7 +81,7 @@ const menuOpenOrClose = () => emit('menu', !props.isCollapse)
     cursor:pointer;
   }
   .el-breadcrumb {
-    line-height:60px;
+    line-height:40px;
   }
   a {
     text-decoration:none;

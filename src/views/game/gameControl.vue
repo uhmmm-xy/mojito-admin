@@ -56,7 +56,12 @@
     <el-table-column prop="update_admin" label="操作人"> </el-table-column>
     <el-table-column fixed="right" width="200px" label="操作">
       <template #default="scope">
-        <el-button v-if="hasUpdate" :link="true" type="primary" @click="handleEdit(scope.row)">
+        <el-button
+          v-if="hasUpdate"
+          :link="true"
+          type="primary"
+          @click="handleEdit(scope.row)"
+        >
           修改
         </el-button>
         <el-popconfirm
@@ -81,15 +86,22 @@
       </el-col>
     </el-row>
     <el-divider />
-    <el-row v-for="(item, index) in table.data" :key="index">
-      <el-col :span="18" :class="getColor(item)">
-        {{ console.log(table) }}
-        {{ item.user_name }}&nbsp;&nbsp;|&nbsp;&nbsp;{{
-          item.pid
-        }}&nbsp;&nbsp;|&nbsp;&nbsp;{{ item.value }}
-      </el-col>
-      <el-col :span="6">
-        <el-button v-if="hasUpdate" :link="true" type="primary" @click="handleEdit(item)">
+    <el-row
+      v-for="(item, index) in table.data"
+      :key="index"
+      :class="getColor(item)"
+    >
+      <el-col :span="8">|{{ item.user_name }}</el-col>
+      <el-col :span="5">|{{ item.pid }}</el-col>
+      <el-col :span="5">|{{ item.value }}</el-col>
+
+      <el-col :span="6">|
+        <el-button
+          v-if="hasUpdate"
+          :link="true"
+          type="primary"
+          @click="handleEdit(item)"
+        >
           修改
         </el-button>
         <el-popconfirm
@@ -130,8 +142,6 @@ import { usePermissionStore } from "@/store/permission";
 import { tableDataFormat, tableDefaultData } from "@/utils/table";
 import { isMobile } from "@/utils/helper";
 
-
-
 const permissionStore = usePermissionStore();
 
 const drawer = ref(false);
@@ -161,8 +171,8 @@ const onCreated = () => {
 };
 
 const handleEdit = (row) => {
-  row.status = row.status+"";
-  row.game_type = row.game_type+"";
+  row.status = row.status + "";
+  row.game_type = row.game_type + "";
   updateRow.value = row;
   formAction.value = "edit";
   drawer.value = true;
@@ -179,15 +189,13 @@ const hasUpdate = computed(() =>
   permissionStore.hasPermission("game.control.update")
 );
 
-const getColor = (item,index=0) => {
+const getColor = (item, index = 0) => {
   if ((item.status = 0)) {
     return "backgroundWhite";
   } else {
     return item.value > 0 ? "backgroundGreen" : "backgroundRed";
   }
 };
-
-
 
 console.log(hasUpdate);
 </script>

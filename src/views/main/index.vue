@@ -1,9 +1,8 @@
 <template>
   <el-container style="height:100%">
-    <nav-bar :is-collapse="isCollapse"></nav-bar>
+    <nav-bar :is-collapse="isCollapse" @closeMenu="changeMenuStatus"></nav-bar>
     <el-container direction="vertical">
-      <mojito-header :is-collapse="isCollapse" @menu="changeMenuStatus"></mojito-header>
-      <tags-view></tags-view>
+      <mojito-header v-show="!isMobile() || (isCollapse && isMobile())" :is-collapse="isCollapse" @menu="changeMenuStatus"></mojito-header>
       <el-main>
         <router-view v-slot="{ Component }">
           <el-scrollbar height="100%">
@@ -20,9 +19,9 @@
 <script setup>
 import MojitoHeader from "@/components/Layout/Header.vue"
 import NavBar from "@/components/Layout/NavBar.vue"
-import TagsView from "@/components/Layout/TagsView.vue"
 import { usePermissionStore } from '@/store/permission'
 import { useTagStore } from '@/store/tag'
+import { isMobile } from "@/utils/helper"
 import { ref, computed } from 'vue'
 
 const permissionStore = usePermissionStore()
@@ -30,7 +29,7 @@ const tagStore = useTagStore()
 
 permissionStore.loadPermissions()
 
-let isCollapse = ref(false)
+let isCollapse = ref(true)
 
 const cacheTags = computed(() => {
   return tagStore.cacheTags
