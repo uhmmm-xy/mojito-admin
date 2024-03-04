@@ -12,23 +12,34 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="4" :xs="24">
+        <el-col :span="3" :xs="24">
           <el-form-item label="玩家ID：">
             <el-input v-model="table.queryParams.pid" />
           </el-form-item>
         </el-col>
-        <el-col :span="4" :xs="24">
+        <el-col :span="3" :xs="24">
           <el-form-item label="房间号：">
             <el-input v-model="table.queryParams.roomKey" />
           </el-form-item>
         </el-col>
-        <el-col :span="4" :xs="24">
+        <el-col :span="3" :xs="24">
           <el-form-item label="俱乐部：">
             <el-select v-model="table.queryParams.clubID">
               <el-option label="全部" value="-1" />
               <template v-for="item in ClubList" :key="item.id">
                 <el-option :label="item.name" :value="item.id" />
               </template>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="3" :xs="24">
+          <el-form-item label="游戏类型：">
+            <el-select v-model="table.queryParams.game_type">
+              <el-option label="全部游戏" value="-1" />
+              <el-option label="十三水" value="1" />
+              <el-option label="四副牌" value="60" />
+              <el-option label="杭州麻将" value="196" />
+              <el-option label="金华麻将" value="22" />
             </el-select>
           </el-form-item>
         </el-col>
@@ -96,26 +107,30 @@
         {{ getClubName(scope.row.clubID) }}
       </template>
     </el-table-column>
+    <el-table-column prop="gameType" label="游戏"> 
+      <template #default="scope">
+        {{ getGameName(scope.row.gameType) }}
+      </template>
+    </el-table-column>
     <el-table-column prop="sumCount" label="总局数"> </el-table-column>
     <el-table-column prop="setCount" label="玩局数"> </el-table-column>
     <el-table-column prop="createRoomTime" label="创建时间"> </el-table-column>
-    <el-table-column prop="endTime" label="创建时间"> </el-table-column>
+    <el-table-column prop="endTime" label="结束时间"> </el-table-column>
   </el-table>
   <el-card v-else>
     <el-row>
-      <el-col :span="6">玩家ID<br/>房间号</el-col>
-      <el-col :span="2">玩</el-col>
-      <el-col :span="2">总</el-col>
-      <el-col :span="3">分数</el-col>
-      <el-col :span="7">俱乐部</el-col>
-      <el-col :span="4">消费房卡</el-col>
+      <el-col :span="5">玩家ID</el-col>
+      <el-col :span="5">房间号</el-col>
+      <el-col :span="4">分数</el-col>
+      <el-col :span="3">俱乐部<br/>游戏</el-col>
+      <el-col :span="2">房卡</el-col>
+      <el-col :span="5">时间</el-col>
     </el-row>
     <el-divider style="margin: 10px 0px" />
     <el-row class="mobile-row" v-for="(item, index) in table.data" :key="index">
-      <el-col :span="6"> {{ item.pid }} <br/> {{ item.roomKey }}</el-col>
-      <el-col :span="2"> {{ item.setCount }}</el-col>
-      <el-col :span="2"> {{ item.sumCount }}</el-col>
-      <el-col :span="3">
+      <el-col :span="5"> {{ item.pid }}</el-col>
+      <el-col :span="5"> {{ item.roomKey }}</el-col>
+      <el-col :span="4">
         <el-tag
           :span="1"
           :type="
@@ -128,8 +143,9 @@
         {{ item.point }}
         </el-tag>
       </el-col>
-      <el-col :span="7">{{ getClubName(item.clubID) }}</el-col>
-      <el-col :span="4">{{ item.value }}</el-col>
+      <el-col :span="3">{{ getClubName(item.clubID) }} <br/> {{ getGameName(item.gameType) }}</el-col>
+      <el-col :span="2">{{ item.value }}</el-col>
+      <el-col :span="5">{{ item.createRoomTime }}</el-col>
     </el-row>
   </el-card>
   <el-pagination
@@ -183,17 +199,28 @@ const getClubName = (id)=>{
   return "暂无";
 }
 
+let Games = {
+  1: "十三水",
+  22: "金华麻将",
+  60: "四副牌",
+  196: "杭州麻将",
+}
+
+const getGameName = (type)=>{
+  return Games[type];
+}
+
 
 requestData();
 </script>
 <style scoped>
 .mobile-row .el-col {
-  border-left: 1px #000 solid;
+  /* border-left: 1px #000 solid; */
   border-bottom: 1px #000 solid;
   padding-left: 3px;
   font-size: 1.05rem;
 }
-.mobile-row .el-col:last-child {
+/* .mobile-row .el-col:last-child {
   border-right: 1px #000 solid;
-}
+} */
 </style>
